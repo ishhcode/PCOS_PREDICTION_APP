@@ -7,7 +7,7 @@ CORS(app, supports_credentials=True)
 
 
 
-pickled_model = pickle.load(open("pcos_predict.pkl", "rb"))
+pickled_model = pickle.load(open("pcos_predict-2.pkl", "rb"))
 
 @app.route("/")
 def hello_world():
