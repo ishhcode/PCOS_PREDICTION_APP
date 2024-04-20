@@ -200,4 +200,44 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser, loginUser, logOutUser, refreshAccessToken };
+const periodTracker = asyncHandler(async (req, res) => {
+  const { startDate, cycleLength, periodLength } = req.body;
+  if (!startDate || !cycleLength || !periodLength) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+  // Perform calculations
+  const startDateObj = new Date(startDate);
+  const cycleLengthDays = parseInt(cycleLength);
+  const periodLengthDays = parseInt(periodLength);
+  const nextPeriodStartDate = new Date(
+    startDateObj.getTime() + cycleLengthDays * 24 * 60 * 60 * 1000
+  );
+  const ovulationDate = new Date(
+    nextPeriodStartDate.getTime() - 14 * 24 * 60 * 60 * 1000
+  );
+  const fertileStartDate = new Date(
+    ovulationDate.getTime() - 5 * 24 * 60 * 60 * 1000
+  );
+  const fertileEndDate = new Date(
+    ovulationDate.getTime() + 4 * 24 * 60 * 60 * 1000
+  );
+  const pregnancyTestDate = new Date(
+    nextPeriodStartDate.getTime() + 1 * 24 * 60 * 60 * 1000
+  );
+  const options = { day: "numeric", month: "long", year: "numeric" };
+  const results = {
+    nextPeriodStartDate: nextPeriodStartDate.toLocaleDateString(
+      undefined,
+      options
+    ),
+    ovulationDate: ovulationDate.toLocaleDateString(undefined, options),
+    fertileWindow: `${fertileStartDate.toLocaleDateString(
+      undefined,
+      options
+    )} - ${fertileEndDate.toLocaleDateString(undefined, options)}`,
+    pregnancyTestDate: pregnancyTestDate.toLocaleDateString(undefined, options),
+  };
+  res.status(200).json(results);
+});
+
+export { registerUser, loginUser, logOutUser, refreshAccessToken,periodTracker, };
