@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   logOutUser,
   loginUser,
+  periodTracker,
   refreshAccessToken,
   registerUser,
 } from "../controllers/user.controller.js";
@@ -22,6 +23,7 @@ router.route("/register").post(
   registerUser
 );
 router.route("/login").post(loginUser);
+router.route("/calculate").post(periodTracker);
 router.route("/refresh-token").post(refreshAccessToken);
 router.route("/logout").post(verifyJWT, logOutUser);
 export default router;
